@@ -45,7 +45,7 @@ const signup = async (req ,res) => {
         const login = async (req, res) => {
         const {email , password} = req.body;
 
-     const user = await prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
         where: {email: email},
     });
 
