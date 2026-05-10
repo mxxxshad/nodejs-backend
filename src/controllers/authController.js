@@ -1,6 +1,7 @@
 // authController.js
 import { prisma } from '../config/db.js';  // make sure this line exists!
 import bcrypt from "bcrypt"; 
+import {generateToken} from '../utils/generateToken.js'
 
 const signup = async (req ,res) => {
     const {name ,email , password} = req.body;
@@ -25,6 +26,8 @@ const signup = async (req ,res) => {
             password: hashedPassword,
         },
      });
+        const token = generateToken(user.id, res);
+
      res.status(201).json({
         status:"success",
         data: {
@@ -32,14 +35,15 @@ const signup = async (req ,res) => {
             id:user.id,
             name:name,
             email:email,
-        }
-        }
+        },
+        token,
+        },
        
-     })
+     });
 };
 
-const login = async (req,res) => {
-    const {email , password} = req.body;
+        const login = async (req, res) => {
+        const {email , password} = req.body;
 
      const user = await prisma.user.findUnique({
         where: {email: email},
@@ -54,17 +58,32 @@ const login = async (req,res) => {
         return res.status(401).json({ error:"Invalid email or password"})
      }
 
+     // Generate JWT token
+
+     const token = generateToken(user.id ,res);
+
       res.status(201).json({
         status:"success",
         data: {
             user: {
             id:user.id,
-           
             email:email,
-        }
-        }
+        },
+        token,
+        },
        
-     })
+     });
 };
 
-export {signup , login};
+    const logout = async (req ,res) => {
+        res.cookie("jwt" , "", {
+            httpOnly: true,
+            expires: new Date(0),
+        })
+        res.status(200).json({
+            status:"success",
+            message:"Logged out succesfully",
+        });
+    };
+
+export {signup , login , logout};
