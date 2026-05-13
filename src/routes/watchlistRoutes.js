@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.use(authMiddleware);
  
-router.post("/" , addToWatchlist);
+router.post("/" ,authMiddleware, addToWatchlist);
 router.post("/login" , login);
 router.post("/logout" , logout);
     
