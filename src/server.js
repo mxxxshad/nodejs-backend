@@ -1,17 +1,14 @@
+import 'dotenv/config';
 import express from 'express';
-import {config} from "dotenv";
-// import cors from 'cors';
+import { connectDB, disconnectDB } from "./config/db.js";
 
-//Import Routes
-
+// Import Routes
 import movieRoutes from "./routes/movieRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import watchlistRoutes from "./routes/watchlistRoutes.js";
 
 
-
-config();
-
-
+connectDB();
 
 const app = express();
 // app.use(cors());
@@ -21,6 +18,8 @@ app.use(express.urlencoded({extended:true}));
 // API Routes
 
 app.use("/auth" , authRoutes);
+app.use("/movie" , movieRoutes);
+app.use("/watchh" , watchlistRoutes);
 
 app.get("/hello" ,(req,res)=>{
     res.json({message: "Hello World"});
